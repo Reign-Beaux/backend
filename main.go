@@ -1,10 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
+
+	"backend/src/user"
 
 	"github.com/gorilla/mux"
 )
@@ -12,8 +13,13 @@ import (
 func main() {
 	var router = mux.NewRouter()
 
-	router.HandleFunc("/users", getUsers).Methods("GET")
-	router.HandleFunc("/courses", getCourses).Methods("GET")
+	var userEndpoints = user.MakeEndpoints()
+
+	router.HandleFunc("/users", userEndpoints.Create).Methods("POST")
+	router.HandleFunc("/users", userEndpoints.GetAll).Methods("GET")
+	// router.HandleFunc("/users/{id}", userEndpoints.Get).Methods("GET")
+	// router.HandleFunc("/users/{id}", userEndpoints.Update).Methods("PUT")
+	// router.HandleFunc("/users/{id}", userEndpoints.Delete).Methods("DELETE")
 
 	var server = &http.Server{
 		Addr:         "127.0.0.1:8000",
@@ -28,12 +34,4 @@ func main() {
 		log.Fatal(error)
 		return
 	}
-}
-
-func getUsers(writer http.ResponseWriter, request *http.Request) {
-	json.NewEncoder(writer).Encode(map[string]bool{"ok": true})
-}
-
-func getCourses(writer http.ResponseWriter, request *http.Request) {
-	json.NewEncoder(writer).Encode(map[string]bool{"ok": true})
 }
