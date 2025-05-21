@@ -21,6 +21,10 @@ type (
 		Email     string `json:"email"`
 		Phone     string `json:"phone"`
 	}
+
+	ErrorResponse struct {
+		Error string `json:"error"`
+	}
 )
 
 func MakeEndpoints() Endpoints {
@@ -38,10 +42,10 @@ func makeCreateEndpoint() Controller {
 
 		var createRequest CreateRequest
 
-		var error = json.NewDecoder(request.Body).Decode(&createRequest)
+		var err = json.NewDecoder(request.Body).Decode(&createRequest)
 
-		if error != nil {
-			http.Error(writer, error.Error(), http.StatusBadRequest)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
 

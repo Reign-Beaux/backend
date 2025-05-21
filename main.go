@@ -28,10 +28,10 @@ func main() {
 		WriteTimeout: 5 * time.Second,
 	}
 
-	var error = server.ListenAndServe()
+	var err = server.ListenAndServe()
 
-	if error != nil {
-		log.Fatal(error)
+	if err != nil {
+		log.Fatal(err)
 		return
 	}
 }
