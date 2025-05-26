@@ -13,7 +13,8 @@ import (
 func main() {
 	var router = mux.NewRouter()
 
-	var userEndpoints = user.MakeEndpoints()
+	var userService = user.NewService()
+	var userEndpoints = user.MakeEndpoints(userService)
 
 	router.HandleFunc("/users", userEndpoints.Create).Methods("POST")
 	router.HandleFunc("/users", userEndpoints.GetAll).Methods("GET")
