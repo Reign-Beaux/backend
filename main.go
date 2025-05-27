@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -8,10 +9,25 @@ import (
 	"backend/src/user"
 
 	"github.com/gorilla/mux"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {
 	var router = mux.NewRouter()
+
+	var dsn = fmt.Sprintf(
+		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		"root",
+		"root",
+		"127.0.0.1",
+		"3320",
+		"go-course-web",
+	)
+	var db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db = db.Debug()
+
+	var _ = db.AutoMigrate(&user.User{})
 
 	var userService = user.NewService()
 	var userEndpoints = user.MakeEndpoints(userService)
