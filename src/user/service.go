@@ -6,13 +6,28 @@ type Service interface {
 	Create(firstName, lastName, email, phone string) error
 }
 
-type service struct{}
-
-func NewService() Service {
-	return &service{}
+type service struct {
+	logger     *log.Logger
+	repository Repository
 }
 
-func (u *service) Create(firstName, lastName, email, phone string) error {
-	log.Println("Create user service")
+func NewService(logger *log.Logger, repository Repository) Service {
+	return &service{
+		logger:     logger,
+		repository: repository,
+	}
+}
+
+func (s *service) Create(firstName, lastName, email, phone string) error {
+	s.logger.Println("Create user service")
+
+	var newUser = User{
+		FirstName: firstName,
+		LastName:  lastName,
+		Email:     email,
+		Phone:     phone,
+	}
+
+	s.repository.Create(&newUser)
 	return nil
 }

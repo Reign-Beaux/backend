@@ -18,6 +18,7 @@ import (
 func main() {
 	var router = mux.NewRouter()
 	_ = godotenv.Load()
+	var logger = log.New(os.Stdout, "", log.LstdFlags|log.Lshortfile)
 
 	var dsn = fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -32,7 +33,8 @@ func main() {
 
 	var _ = db.AutoMigrate(&user.User{})
 
-	var userService = user.NewService()
+	var userRepository = user.NewRepository(logger, db)
+	var userService = user.NewService(logger, userRepository)
 	var userEndpoints = user.MakeEndpoints(userService)
 
 	router.HandleFunc("/users", userEndpoints.Create).Methods("POST")
